@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competition Login</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Competition Login</h1>
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" placeholder="Enter username">
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" placeholder="Enter password">
+
+    <button onclick="login()">Login</button>
+</div>
+
+<script>
+function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    // Example credentials (you can change)
+    const participantUser = "participant";
+    const participantPass = "123";
+    const adminUser = "admin";
+    const adminPass = "admin123";
+
+    if(user === participantUser && pass === participantPass){
+        // Participant login
+        localStorage.setItem("participantName", "Participant"); // store name
+        window.location.href = "participant.html";
+    }
+    else if(user === adminUser && pass === adminPass){
+        // Admin login
+        window.location.href = "admin.html";
+    }
+    else{
+        alert("Incorrect username or password!");
+    }
+}
+</script>
+</body>
+</html>

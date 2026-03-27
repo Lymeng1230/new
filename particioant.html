@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Participant Exam</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Exam - 5 Questions</h1>
+
+    <form id="examForm">
+        <div id="questions"></div>
+        <button type="button" onclick="submitExam()">Submit Exam</button>
+    </form>
+
+    <div id="result"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Participant name from login
+const participantName = localStorage.getItem("participantName") || "Anonymous";
+
+// 5 MCQs
+const questions = [
+    {q:"Capital of Cambodia?", options:["Phnom Penh","Siem Reap","Battambang","Sihanoukville"], answer:"Phnom Penh"},
+    {q:"2 + 3 = ?", options:["4","5","6","7"], answer:"5"},
+    {q:"Largest continent?", options:["Asia","Africa","Europe","Australia"], answer:"Asia"},
+    {q:"Water chemical formula?", options:["H2O","O2","CO2","NaCl"], answer:"H2O"},
+    {q:"Red Planet?", options:["Earth","Mars","Jupiter","Venus"], answer:"Mars"}
+];
+
+// Render questions
+const questionsDiv = document.getElementById("questions");
+questions.forEach((q,i)=>{
+    let qHTML = `<div class="question"><p>${i+1}. ${q.q}</p>`;
+    q.options.sort(()=>Math.random()-0.5).forEach(opt=>{
+        qHTML += `<label><input type="radio" name="q${i}" value="${opt}"> ${opt}</label><br>`;
+    });
+    qHTML += "</div>";
+    questionsDiv.innerHTML += qHTML;
+});
+
+function submitExam() {
+    let score = 0;
+    questions.forEach((q,i)=>{
+        const sel = document.querySelector(`input[name="q${i}"]:checked`);
+        if(sel && sel.value===q.answer) score++;
+    });
+    document.getElementById("result").innerHTML = `<h2>${participantName}, Your Score: ${score}/${questions.length}</h2>`;
+
+    // Save to Firebase
+    db.ref('participants/' + Date.now()).set({
+        name: participantName,
+        score: score
+    });
+}
+</script>
+</body>
+</html>

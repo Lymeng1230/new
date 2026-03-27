@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Admin Panel</h1>
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Score</th></tr>
+        </thead>
+        <tbody id="adminTable"></tbody>
+    </table>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const adminTable = document.getElementById("adminTable");
+db.ref('participants').on('value', snapshot=>{
+    adminTable.innerHTML = "";
+    snapshot.forEach(snap=>{
+        const data = snap.val();
+        adminTable.innerHTML += `<tr><td>${data.name}</td><td>${data.score}</td></tr>`;
+    });
+});
+</script>
+</body>
+</html>
